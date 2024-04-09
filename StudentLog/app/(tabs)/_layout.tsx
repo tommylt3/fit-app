@@ -21,15 +21,24 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
+          headerStyle: {
+              backgroundColor: '#8b0000', // Change this to your desired color
+          },
+          headerTintColor: 'white',
+          tabBarStyle: {
+              backgroundColor: '#8b0000', // Change this to your desired color
+          },
+          tabBarActiveTintColor: 'white', // Change text color of active tab
+          tabBarInactiveTintColor: 'lightgray', // Change text color of inactive tabs
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
+          title: 'Assignments',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -50,10 +59,17 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: 'Tab Two',
+          title: 'Nutrition',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
+        <Tabs.Screen
+            name="three"
+            options={{
+                title: 'Events',
+                tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+            }}
+        />
     </Tabs>
   );
 }
