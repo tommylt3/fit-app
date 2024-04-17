@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, Button, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, Button, TouchableOpacity, View, Image } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import EditScreenInfo from '@/components/EditScreenInfo';
@@ -94,7 +94,8 @@ export default function TabOneScreen() {
         )}
         {assignments.length === 0 && (
             <View>
-              <Text style={styles.noAssignments}>You have no assignments! :)</Text>
+              <Image source={require('../../assets/images/sleepy_sloth.png')} style={styles.noAssignmentsImage}/> 
+              <Text style={styles.noAssignments}>You have no assignments!</Text>
             </View>
         )}
       </View>
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
   noAssignments: {
     fontSize: 40,
     textAlign: 'center',
-    marginTop: '50%',
+    marginTop: '10%',
   },
   newAssignment: {
     textAlign: 'center',
@@ -183,4 +184,10 @@ const styles = StyleSheet.create({
     color: 'red',
     paddingRight: 20,
   },
+  noAssignmentsImage: {
+    alignContent: 'center',
+    flex: 1,
+    width: 250, 
+    height: 250,
+  }
 });
