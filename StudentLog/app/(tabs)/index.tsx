@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, Button, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, TextInput, Button, TouchableOpacity, View, Alert, Image } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import EditScreenInfo from '@/components/EditScreenInfo';
@@ -13,11 +13,38 @@ export default function TabOneScreen() {
     dueDate: '',
   });
 
-  const handleAssignmentInput = (field, value) => {
+  const inputAssignment = (field: string, value: string) => {
     setNewAssignment({ ...newAssignment, [field]: value });
   };
 
-  const addAssignment = () => {
+  const displaySuccess = () => {
+    Alert.alert(
+        'Successfully Added',
+        'Assignment Added to Log',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false }
+    );
+  };
+
+  const displayFailure = () => {
+    Alert.alert(
+        'Error',
+        'Please enter all assignment details',
+        [{ text: 'OK', onPress: () => console.log('OK') }],
+        { cancelable: false }
+    );
+    return;
+  };
+
+  const createAssignment = () => {
+    // @ts-ignore
     setAssignments([...assignments, newAssignment]);
     setNewAssignment({
       description: '',
@@ -27,7 +54,7 @@ export default function TabOneScreen() {
     setShowForm(false);
   };
 
-  const removeAssignment = (index) => {
+  const removeAssignment = (index: number) => {
     const updatedAssignments = [...assignments];
     updatedAssignments.splice(index, 1);
     setAssignments(updatedAssignments);
@@ -35,6 +62,17 @@ export default function TabOneScreen() {
 
   const toggleFormVisibility = () => {
     setShowForm(!showForm);
+  };
+
+  const checkSubmission = () => {
+    if (newAssignment.description === '' ||
+        newAssignment.class === '' ||
+        newAssignment.dueDate === '') {
+      displayFailure();
+    } else {
+      createAssignment();
+      displaySuccess();
+    }
   };
 
   return (
@@ -46,22 +84,22 @@ export default function TabOneScreen() {
                   style={styles.input}
                   placeholder="Description"
                   value={newAssignment.description}
-                  onChangeText={(text) => handleAssignmentInput('description', text)}
+                  onChangeText={(text) => inputAssignment('description', text)}
               />
               <TextInput
                   style={styles.input}
                   placeholder="Class"
                   value={newAssignment.class}
-                  onChangeText={(text) => handleAssignmentInput('class', text)}
+                  onChangeText={(text) => inputAssignment('class', text)}
               />
               <TextInput
                   style={styles.input}
                   placeholder="Due Date"
                   value={newAssignment.dueDate}
-                  onChangeText={(text) => handleAssignmentInput('dueDate', text)}
+                  onChangeText={(text) => inputAssignment('dueDate', text)}
               />
               <View style={styles.submitButton}>
-                <Button color='white' title="Submit" onPress={addAssignment} />
+                <Button color='white' title="Submit"  onPress={() => {checkSubmission();}}/>
               </View>
             </View>
         ) : (
