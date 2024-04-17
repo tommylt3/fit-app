@@ -6,9 +6,6 @@ import { Text } from '@/components/Themed';
 
 export default function TabTwoScreen() {
   const [screen, setScreen] = useState('initialScreen');
-  const [showForm, setShowForm] = useState(false);
-  const [showWorkoutForm, setWorkoutForm] = useState(false);
-  const [showMealForm, setMealForm] = useState(false);
   const[workouts, setWorkouts] = useState([]);
   const [newWorkout, setNewWorkout] = useState({
     time: '',
