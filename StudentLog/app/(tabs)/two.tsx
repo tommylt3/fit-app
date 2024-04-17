@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, Button, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, Button, TouchableOpacity, View, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import EditScreenInfo from '@/components/EditScreenInfo';
@@ -11,7 +11,7 @@ export default function TabTwoScreen() {
   const [newWorkout, setNewWorkout] = useState({
     time: '',
     type: '',
-    burnedCal: '',
+    burnedCals: '',
   });
   const [newMeal, setNewMeal] = useState({
     location: '',
@@ -19,7 +19,55 @@ export default function TabTwoScreen() {
     consumedCal: '',
   });
 
-  const handleWorkoutInput = (field:string, value:string) => {
+  const displaySuccess = () => {
+    Alert.alert(
+        'Successfully Added',
+        'Entry Added to Log',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false }
+    );
+  };
+
+  const displayFailure = () => {
+    Alert.alert(
+        'Error',
+        'Please enter all assignment details',
+        [{ text: 'OK', onPress: () => console.log('OK') }],
+        { cancelable: false }
+    );
+    return;
+  };
+
+  const checkWorkoutSubmission = () => {
+    if (newWorkout.time === '' ||
+        newWorkout.type === '' ||
+        newWorkout.burnedCals === '') {
+      displayFailure();
+    } else {
+      addWorkout();
+      displaySuccess();
+    }
+  };
+
+  const checkMealSubmission = () => {
+    if (newMeal.location === '' ||
+        newMeal.item === '' ||
+        newMeal.consumedCal === '') {
+      displayFailure();
+    } else {
+      addMeal();
+      displaySuccess();
+    }
+  };
+
+  const workoutLog = (field:string, value:string) => {
     setNewWorkout({ ...newWorkout, [field]: value})
   }
 
@@ -28,7 +76,7 @@ export default function TabTwoScreen() {
     setNewWorkout({
       time: '',
       type: '',
-      burnedCal: '',
+      burnedCals: '',
     });
     switchScreen('workoutListScreen');
   }
@@ -99,7 +147,7 @@ export default function TabTwoScreen() {
               <View style={styles.workoutInfo}>
                 <Text style={styles.workoutWord}>{workout.type}</Text>
                 <Text>Time: {workout.time}</Text>
-                <Text>Burned Calories: {workout.burnedCal}</Text>
+                <Text>Burned Calories: {workout.burnedCals}</Text>
               </View>
             <TouchableOpacity onPress={() => removeWorkout(index)}>
             <Text style={styles.removeButton}>Remove</Text>
@@ -175,7 +223,7 @@ export default function TabTwoScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.workoutButton}>
-          <TouchableOpacity onPress= {() => switchScreen('workoutScreen')}>
+          <TouchableOpacity onPress= {() => switchScreen('submitWorkout')}>
             <View style={styles.buttonHeader}>
               <Ionicons name="barbell" size={50} color='#8b0000' />
               <Text style={styles.buttonText}> Create Workout</Text>
@@ -194,7 +242,7 @@ export default function TabTwoScreen() {
     )
   }
 
-  const workoutFormScreen = () => {
+  const workoutForm = () => {
     return (
       <View style={styles.container}>
         <View style={styles.workoutForm}>
@@ -203,22 +251,22 @@ export default function TabTwoScreen() {
                   style={styles.input}
                   placeholder="Time"
                   value={newWorkout.time}
-                  onChangeText={(text) => handleWorkoutInput('time', text)}
+                  onChangeText={(text) => workoutLog('time', text)}
               />
               <TextInput
                   style={styles.input}
                   placeholder="Type"
                   value={newWorkout.type}
-                  onChangeText={(text) => handleWorkoutInput('type', text)}
+                  onChangeText={(text) => workoutLog('type', text)}
               />
               <TextInput
                   style={styles.input}
                   placeholder="Calories Burned"
-                  value={newWorkout.burnedCal}
-                  onChangeText={(text) => handleWorkoutInput('burnedCal', text)}
+                  value={newWorkout.burnedCals}
+                  onChangeText={(text) => workoutLog('burnedCals', text)}
               />
               <View style={styles.submitButton}>
-                <Button color='white' title="Submit" onPress={addWorkout} />
+                <Button color='white' title="Submit" onPress={checkWorkoutSubmission} />
               </View>
             </View>
       </View>
@@ -226,8 +274,10 @@ export default function TabTwoScreen() {
   }
 
   const healthProfileScreen = () => {
-    const totalCals = workouts.reduce((total, workout) => total + parseInt(workout.burnedCal), 0);
+    const totalCals = workouts.reduce((total, workout) => total + parseInt(workout.burnedCals), 0);
     const totalWorkouts = workouts.length;
+    const totalCalsMeal = meal.reduce((total, workout) => total + parseInt(workout.consumedCal), 0);
+    const totalMeals = meal.length;
 
     return (
     <View style={styles.container}>
@@ -238,10 +288,10 @@ export default function TabTwoScreen() {
       <Text style={styles.workCalStat}>Total Calories Burned: {totalCals}</Text>
       <Text style={styles.workNumStat}>Total Workouts: {totalWorkouts}</Text>
       <View style={styles.mealReturnButton}>
-        <Button color='white' title="Meals" onPress= {() => switchScreen('mealScreen')} />
+        <Button color='white' title="Meals" onPress= {() => switchScreen('mealListScreen')} />
       </View>
-      <Text style={styles.mealCalStat}>Total Calories Consumed: </Text>
-      <Text style={styles.mealNumStat}>Total Meals: </Text>
+      <Text style={styles.mealCalStat}>Total Calories Consumed: {totalCalsMeal}</Text>
+      <Text style={styles.mealNumStat}>Total Meals: {totalMeals}</Text>
     </View>
     )
   }
@@ -259,22 +309,22 @@ export default function TabTwoScreen() {
                     style={styles.input}
                     placeholder="Location"
                     value={newMeal.location}
-                    onChangeText={(text) => handleMealInput('Location', text)}
+                    onChangeText={(text) => handleMealInput('location', text)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Menu Item"
                     value={newMeal.item}
-                    onChangeText={(text) => handleMealInput('Menu Item', text)}
+                    onChangeText={(text) => handleMealInput('item', text)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Consumed Calories"
                     value={newMeal.consumedCal}
-                    onChangeText={(text) => handleMealInput('Consumed Calories', text)}
+                    onChangeText={(text) => handleMealInput('consumedCal', text)}
                 />
                 <View style={styles.submitButton}>
-                  <Button color='white' title="Submit" onPress={addMeal} />
+                  <Button color='white' title="Submit" onPress={checkMealSubmission} />
                 </View>
               </View>
         </View>
@@ -286,7 +336,7 @@ export default function TabTwoScreen() {
     <View style={styles.container}>
       {screen === 'initialScreen' && initialScreen()}
       {screen === 'entryScreen' && entryChoiceScreen()}
-      {screen === 'workoutScreen' && workoutFormScreen()}
+      {screen === 'submitWorkout' && workoutForm()}
       {screen === 'workoutListScreen' && workoutListScreen()}
       {screen === 'profileScreen' && healthProfileScreen()}
       {screen === 'mealScreen' && mealFormScreen()}
