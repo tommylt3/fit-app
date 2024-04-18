@@ -1,7 +1,6 @@
-import { StyleSheet, TextInput, Button, TouchableOpacity, View, Alert } from 'react-native';
+import { StyleSheet, TextInput, Button, TouchableOpacity, View, Alert, Image } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text } from '@/components/Themed';
 
 export default function TabOneScreen() {
@@ -132,7 +131,7 @@ export default function TabOneScreen() {
         )}
         {assignments.length === 0 && (
             <View>
-              <Text style={styles.noAssignments}>You have no assignments! :)</Text>
+              <Text style={styles.noAssignments}>You have no assignments!</Text>
             </View>
         )}
       </View>
@@ -180,7 +179,7 @@ const styles = StyleSheet.create({
   noAssignments: {
     fontSize: 40,
     textAlign: 'center',
-    marginTop: '50%',
+    marginTop: '10%',
   },
   newAssignment: {
     textAlign: 'center',
