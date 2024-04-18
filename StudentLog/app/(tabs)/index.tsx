@@ -8,8 +8,8 @@ export default function TabOneScreen() {
   const [showForm, setShowForm] = useState(false);
   const [assignments, setAssignments] = useState([]);
   const [newAssignment, setNewAssignment] = useState({
-    description: '',
-    class: '',
+    title: '',
+    subject: '',
     dueDate: '',
   });
 
@@ -47,14 +47,14 @@ export default function TabOneScreen() {
     // @ts-ignore
     setAssignments([...assignments, newAssignment]);
     setNewAssignment({
-      description: '',
-      class: '',
+      title: '',
+      subject: '',
       dueDate: '',
     });
     setShowForm(false);
   };
 
-  const removeAssignment = (index: number) => {
+  const completeAssignment = (index: number) => {
     const updatedAssignments = [...assignments];
     updatedAssignments.splice(index, 1);
     setAssignments(updatedAssignments);
@@ -64,9 +64,9 @@ export default function TabOneScreen() {
     setShowForm(!showForm);
   };
 
-  const checkSubmission = () => {
-    if (newAssignment.description === '' ||
-        newAssignment.class === '' ||
+  const addTask = () => {
+    if (newAssignment.title === '' ||
+        newAssignment.subject === '' ||
         newAssignment.dueDate === '') {
       displayFailure();
     } else {
@@ -82,15 +82,15 @@ export default function TabOneScreen() {
               <Text style={styles.newAssignment}>New Assignment</Text>
               <TextInput
                   style={styles.input}
-                  placeholder="Description"
-                  value={newAssignment.description}
-                  onChangeText={(text) => inputAssignment('description', text)}
+                  placeholder="Title"
+                  value={newAssignment.title}
+                  onChangeText={(text) => inputAssignment('title', text)}
               />
               <TextInput
                   style={styles.input}
-                  placeholder="Class"
-                  value={newAssignment.class}
-                  onChangeText={(text) => inputAssignment('class', text)}
+                  placeholder="Subject"
+                  value={newAssignment.subject}
+                  onChangeText={(text) => inputAssignment('subject', text)}
               />
               <TextInput
                   style={styles.input}
@@ -99,7 +99,7 @@ export default function TabOneScreen() {
                   onChangeText={(text) => inputAssignment('dueDate', text)}
               />
               <View style={styles.submitButton}>
-                <Button color='white' title="Submit"  onPress={() => {checkSubmission();}}/>
+                <Button color='white' title="Submit"  onPress={() => {addTask();}}/>
               </View>
             </View>
         ) : (
@@ -119,11 +119,11 @@ export default function TabOneScreen() {
               {assignments.map((assignment, index) => (
                   <View key={index} style={styles.assignmentItem}>
                     <View style={styles.assignmentInfo}>
-                      <Text style={styles.assignmentWord}>{assignment.description}</Text>
-                      <Text>Class: {assignment.class}</Text>
+                      <Text style={styles.assignmentWord}>{assignment.title}</Text>
+                      <Text>Subject: {assignment.subject}</Text>
                       <Text>Due Date: {assignment.dueDate}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => removeAssignment(index)}>
+                    <TouchableOpacity onPress={() => completeAssignment(index)}>
                       <Text style={styles.removeButton}>Remove</Text>
                     </TouchableOpacity>
                   </View>
