@@ -266,7 +266,7 @@ export default function TabTwoScreen() {
                   onChangeText={(text) => workoutLog('burnedCals', text)}
               />
               <View style={styles.submitButton}>
-                <Button color='white' title="Submit" onPress={checkWorkoutSubmission} />
+                <Button color='black' title="Submit" onPress={checkWorkoutSubmission} />
               </View>
             </View>
       </View>
@@ -324,7 +324,7 @@ export default function TabTwoScreen() {
                     onChangeText={(text) => handleMealInput('consumedCal', text)}
                 />
                 <View style={styles.submitButton}>
-                  <Button color='white' title="Submit" onPress={checkMealSubmission} />
+                  <Button color='black' title="Submit" onPress={checkMealSubmission} />
                 </View>
               </View>
         </View>
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
   firstMeal: {
     fontSize: 40,
     textAlign: 'center',
-    // marginTop: '50%'
+    marginTop: '50%'
   },
   homeButton: {
     position: 'absolute',
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   submitButton: {
-    backgroundColor: '#8b0000',
+    // backgroundColor: '#8b0000',
     fontSize: 15,
     padding: 5,
     width: 312,
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     justifyContent: 'center',
-    // marginTop: '10%',
+    marginTop: '50%',
     top: -150,
   },
   input: {
@@ -472,6 +472,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop: 40,
     width: '100%',
     paddingLeft: 20,
   },

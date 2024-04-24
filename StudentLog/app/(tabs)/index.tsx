@@ -57,6 +57,7 @@ export default function TabOneScreen() {
     const updatedAssignments = [...assignments];
     updatedAssignments.splice(index, 1);
     setAssignments(updatedAssignments);
+    displaySuccess();
   };
 
   const toggleFormVisibility = () => {
@@ -98,7 +99,7 @@ export default function TabOneScreen() {
                   onChangeText={(text) => inputAssignment('dueDate', text)}
               />
               <View style={styles.submitButton}>
-                <Button color='white' title="Submit"  onPress={() => {addTask();}}/>
+                <Button color='black' title="Submit"  onPress={() => {addTask();}}/>
               </View>
             </View>
         ) : (
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   submitButton: {
-    backgroundColor: '#8b0000',
+    // backgroundColor: '#8b0000',
     fontSize: 15,
     padding: 5,
   },
