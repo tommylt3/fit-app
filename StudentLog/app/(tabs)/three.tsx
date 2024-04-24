@@ -98,7 +98,7 @@ export default function TabOneScreen() {
                   onChangeText={(text) => inputEvents('time', text)}
               />
               <View style={styles.submitButton}>
-                <Button color='black' title="Submit"  onPress={() => {checkSubmission();}}/>
+                <Button color='white' title="Submit"  onPress={() => {checkSubmission();}}/>
               </View>
             </View>
         ) : (
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   submitButton: {
-    // backgroundColor: '#8b0000',
+    backgroundColor: '#8b0000',
     fontSize: 15,
     padding: 2,
   },
@@ -221,3 +221,4 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
 });
+

@@ -1,0 +1,58 @@
+{
+    "restaurants":
+    [
+        {
+            "name": "Firehouse",
+            "menu": [
+                {
+                    "item": "Meatball Sub",
+                    "calories": 450
+                },
+                {
+                    "item": "Italian Sub",
+                    "calories": 700
+                },
+
+                {
+                    "item": "Firehouse Salad",
+                    "calories": 260
+                }
+            ]
+        
+        },
+        {
+           "name": "Panther Dining Hall",
+           "menu": [
+            {
+                "item": "Hamburger",
+                "calories": 350
+            },
+            {
+                "item": "Pasta & Meatballs",
+                "calories": 400
+            },
+            {
+                "item": "Chicken Nuggets & Fries",
+                "calories": 800
+            }
+           ] 
+        },
+        {
+            "name": "Rathskeller",
+            "menu": [
+                {
+                    "item": "Small Pizza",
+                    "calories": 1200
+                },
+                {
+                    "item": "7ct Wings",
+                    "calories": 500
+                },
+                {
+                    "item": "Large Pizza",
+                    "calories": 2200
+                }
+            ]
+        }
+    ]
+}
