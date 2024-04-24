@@ -5,7 +5,7 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text } from '@/components/Themed';
 import restaurants from './restaurants.json';
 
-export default function TabTwoScreen() { // tab for nutrition screen
+export default function NutritionLogSystem() { // tab for nutrition screen
   // setting use states
   const [screen, setScreen] = useState('initialScreen');
   const[workouts, setWorkouts] = useState([]);
