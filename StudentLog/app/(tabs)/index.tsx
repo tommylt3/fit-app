@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/Themed';
 
 export default function TabOneScreen() {
+  // Creates variables used in the code
   const [showForm, setShowForm] = useState(false);
   const [assignments, setAssignments] = useState([]);
   const [newAssignment, setNewAssignment] = useState({
@@ -12,10 +13,12 @@ export default function TabOneScreen() {
     dueDate: '',
   });
 
+  // Creates new assignment and makes the input available for user
   const inputAssignment = (field: string, value: string) => {
     setNewAssignment({ ...newAssignment, [field]: value });
   };
 
+  // Displays success message
   const displaySuccess = () => {
     Alert.alert(
         'Successfully Added',
@@ -32,6 +35,24 @@ export default function TabOneScreen() {
     );
   };
 
+  // Displays remove success message
+  const displayRemoveSuccess = () => {
+    Alert.alert(
+        'Successfully Removed',
+        'Assignment Removed from Log',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false }
+    );
+  };
+
+  // Displays failure message
   const displayFailure = () => {
     Alert.alert(
         'Error',
@@ -42,6 +63,7 @@ export default function TabOneScreen() {
     return;
   };
 
+  // Allows user to input assignment
   const createAssignment = () => {
     // @ts-ignore
     setAssignments([...assignments, newAssignment]);
@@ -53,16 +75,22 @@ export default function TabOneScreen() {
     setShowForm(false);
   };
 
+
+  // Removes assignment from log
   const completeAssignment = (index: number) => {
     const updatedAssignments = [...assignments];
     updatedAssignments.splice(index, 1);
     setAssignments(updatedAssignments);
+    displayRemoveSuccess();
   };
 
+  // Determines if log is shown or not
   const toggleFormVisibility = () => {
     setShowForm(!showForm);
   };
 
+  // Checks to see if there is input, adds input to log, and displays success message
+  // If there is no input, displays failure message
   const addTask = () => {
     if (newAssignment.title === '' ||
         newAssignment.subject === '' ||
@@ -75,33 +103,39 @@ export default function TabOneScreen() {
   };
 
   return (
+      // Creates input form for user
       <View style={styles.container}>
         {showForm ? (
             <View style={styles.form}>
               <Text style={styles.newAssignment}>New Assignment</Text>
+              {/*Input title*/}
               <TextInput
                   style={styles.input}
                   placeholder="Title"
                   value={newAssignment.title}
                   onChangeText={(text) => inputAssignment('title', text)}
               />
+              {/*Input subject*/}
               <TextInput
                   style={styles.input}
                   placeholder="Subject"
                   value={newAssignment.subject}
                   onChangeText={(text) => inputAssignment('subject', text)}
               />
+              {/*Input dueDate*/}
               <TextInput
                   style={styles.input}
                   placeholder="Due Date"
                   value={newAssignment.dueDate}
                   onChangeText={(text) => inputAssignment('dueDate', text)}
               />
+              {/*Submit Button*/}
               <View style={styles.submitButton}>
                 <Button color='white' title="Submit"  onPress={() => {addTask();}}/>
               </View>
             </View>
         ) : (
+            // Main page of assignment log
             <View style={styles.button}>
               <TouchableOpacity onPress={toggleFormVisibility}>
                 <View style={styles.buttonHeader}>
@@ -114,6 +148,7 @@ export default function TabOneScreen() {
 
         {assignments.length > 0 && (
             <View style={styles.assignmentList}>
+              {/*Format of log and displays all of the assignments*/}
               <Text style={styles.assignmentTitle}>Upcoming Assignments</Text>
               {assignments.map((assignment, index) => (
                   <View key={index} style={styles.assignmentItem}>
@@ -129,6 +164,7 @@ export default function TabOneScreen() {
               ))}
             </View>
         )}
+        {/*Shows user they have no assignments*/}
         {assignments.length === 0 && (
             <View>
               <Text style={styles.noAssignments}>You have no assignments!</Text>
@@ -138,6 +174,7 @@ export default function TabOneScreen() {
   );
 }
 
+// Style of assignment log page
 const styles = StyleSheet.create({
   container: {
     flex: 1,
