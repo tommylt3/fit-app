@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/Themed';
 
-export default function TabOneScreen() {
+export default function EventLogSystem() {
   const [showForm, setShowForm] = useState(false);
   const [Events, setEvents] = useState([]);
   const [newEvents, setNewEvents] = useState({

@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/Themed';
 
-export default function TabOneScreen() {
-  // Creates variables used in the code
+export default function AssignmentLogSystem() {
   const [showForm, setShowForm] = useState(false);
   const [assignments, setAssignments] = useState([]);
   const [newAssignment, setNewAssignment] = useState({
