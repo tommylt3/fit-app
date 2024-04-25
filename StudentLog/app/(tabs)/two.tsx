@@ -274,7 +274,7 @@ export default function NutritionLogSystem() { // tab for nutrition screen
     )
   }
 
-  const selectMenuItems = () => { // shows screen to allow user to enter desired meal from meny items
+  const selectMenuItems = () => { // shows screen to allow user to enter desired meal from menu items
     return(
     <View style={styles.container}>
       <Text style={styles.menuTitle}>Menu Items</Text>
