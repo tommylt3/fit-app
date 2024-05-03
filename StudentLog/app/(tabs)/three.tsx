@@ -1,25 +1,28 @@
-import { StyleSheet, TextInput, Button, TouchableOpacity, View, Alert, Image } from 'react-native';
+import { StyleSheet, TextInput, Button, TouchableOpacity, View, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/Themed';
+import events from './campus_events.json';
 
-export default function EventLogSystem() {
-  const [showForm, setShowForm] = useState(false);
-  const [Events, setEvents] = useState([]);
-  const [newEvents, setNewEvents] = useState({
-    description: '',
-    name: '',
-    time: '',
+export default function EventLogSystem() { // tab for nutrition screen
+  // setting use states
+  const [screen, setScreen] = useState('initialScreen');
+  const[event, setEvent] = useState([]);
+  const[eventItem, setEventItem] = useState([]);
+  const [newEvent, setNewEvent] = useState({
+    name: ''
   });
 
-  const inputEvents = (field: string, value: string) => {
-    setNewEvents({ ...newEvents, [field]: value });
-  };
+  const [newEventItem, setNewEventItem] = useState({
+    club_name: '',
+    event_description: '',
+    location: ''
+  });
 
-  const displaySuccess = () => {
+  const displaySuccess = () => { // success notification
     Alert.alert(
         'Successfully Added',
-        'Events Added to Log',
+        'Entry Added to Log',
         [
           {
             text: 'Cancel',
@@ -32,118 +35,296 @@ export default function EventLogSystem() {
     );
   };
 
-  const displayFailure = () => {
+  const displayFailure = () => { // failure notification
     Alert.alert(
         'Error',
-        'Please enter all Events details',
+        'Please enter all details',
         [{ text: 'OK', onPress: () => console.log('OK') }],
         { cancelable: false }
     );
     return;
   };
 
-  const createEvents = () => {
-    // @ts-ignore
-    setEvents([...Events, newEvents]);
-    setNewEvents({
-      description: '',
-      name: '',
-      time: '',
-    });
-    setShowForm(false);
-  };
-
-  const removeEvents = (index: number) => {
-    const updatedEvents = [...Events];
-    updatedEvents.splice(index, 1);
-    setEvents(updatedEvents);
-  };
-
-  const toggleFormVisibility = () => {
-    setShowForm(!showForm);
-  };
-
-  const checkSubmission = () => {
-    if (newEvents.description === '' ||
-        newEvents.name === '' ||
-        newEvents.time === '') {
-      displayFailure();
+  const checkEventSubmission = () => { 
+    if (newEventItem.club_name === '' || // checking for blank submission
+        newEventItem.event_description === '' ||
+        newEventItem.location === '') {
+      displayFailure(); // failure
     } else {
-      createEvents();
-      displaySuccess();
+      inputEvent(); // adding event to list, calling func
+      displaySuccess(); // success
     }
   };
 
-  return (
-      <View style={styles.container}>
-        {showForm ? (
-            <View style={styles.form}>
-              <Text style={styles.newEvents}>New Event</Text>
-              <TextInput
-                  style={styles.input}
-                  placeholder="Description"
-                  value={newEvents.description}
-                  onChangeText={(text) => inputEvents('description', text)}
-              />
-              <TextInput
-                  style={styles.input}
-                  placeholder="name"
-                  value={newEvents.name}
-                  onChangeText={(text) => inputEvents('name', text)}
-              />
-              <TextInput
-                  style={styles.input}
-                  placeholder="Time"
-                  value={newEvents.time}
-                  onChangeText={(text) => inputEvents('time', text)}
-              />
-              <View style={styles.submitButton}>
-                <Button color='white' title="Submit"  onPress={() => {checkSubmission();}}/>
-              </View>
-            </View>
-        ) : (
-            <View style={styles.button}>
-              <TouchableOpacity onPress={toggleFormVisibility}>
-                <View style={styles.buttonHeader}>
-                  <Ionicons name="add-circle" size={50} color="#8b0000" />
-                  <Text style={styles.buttonText}>Create Events</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-        )}
+  const findevent = (name: string) => {
+    const new_event = events.campus_events.find((name) => { // searching for inputted club in json file
+      return new_event.club_name === name;
+    });
 
-        {Events.length > 0 && (
-            <View style={styles.EventsList}>
-              <Text style={styles.EventsTitle}>Upcoming Events</Text>
-              {Events.map((Events, index) => (
-                  <View key={index} style={styles.EventsItem}>
-                    <View style={styles.EventsInfo}>
-                      <Text style={styles.EventsWord}>{Events.description}</Text>
-                      <Text>Name: {Events.name}</Text>
-                      <Text>Time: {Events.time}</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => removeEvents(index)}>
-                      <Text style={styles.removeButton}>Remove</Text>
-                    </TouchableOpacity>
-                  </View>
-              ))}
+    if (new_event) { // if valid
+      return new_event
+    } 
+    else {
+      return []; // blank array if invalid
+    }
+  }
+
+  const checkclubSubmission = () => {
+    if (newEvent.name === '' || // checking for blanks
+        findevent(newEvent.name).length === 0) { // invalid club
+      displayFailure(); // failure
+    } else {
+      inputRestaruant(); // add club to list, calling func
+    }
+  };
+
+
+  const inputEvent = () => { // adding event to list
+    setEventItem([...eventItem, newEventItem]);
+    setNewEventItem({
+      club_name: '',
+      item: '',
+      consumedCals: ''
+    });
+    switchScreen('eventListScreen') // displaying event list
+  }
+
+  const findEvents = (name: string) => {
+    const club = events.events.find((club) => { // searching for inputted club in json file
+      return club.name === name;
+    });
+
+    if (club) { // if valid
+      return club.menu.map(menuItem => ({ // adding items and calories to array
+        item: menuItem.item,
+        calories: menuItem.calories
+      }))
+    } else {
+      return []; // blank array if invalid
+    }
+  }
+
+  const removeEventItem = (index: number) => { // removing event from list
+    const uplocationdEvents = [...eventItem];
+    uplocationdEvents.splice(index, 1);
+    setEventItem(uplocationdEvents);
+  };
+
+  const switchScreen = (screen:string) => { // main function for switching between screens
+    setScreen(screen);
+  }
+
+  const initialScreen = () => { // main event screen
+    return (
+    // displays create entry button & takes user to entry screen
+    <View style={styles.container}>
+        <View style={styles.homeButton}>
+          {/* switching to entry screen */}
+          <TouchableOpacity onPress= {() => switchScreen('entryScreen')}> 
+            <View style={styles.buttonHeader}>
+              <Ionicons name="accessibility-outline" size={35} color="#8b0000" />
+              <Text style={styles.buttonText}>Find Event</Text>
             </View>
-        )}
-        {Events.length === 0 && (
-            <View>
-              <Text style={styles.noEvents}>You have no events logged!</Text>
-            </View>
-        )}
+          </TouchableOpacity>
+        </View>
+    
+      <View>
+        {/*prompting to log first event */}
+      <Text style={styles.firstEvent}>Find Events To Get Active!</Text>
       </View>
-  );
+
+    </View>
+    );
+  };
+
+  const eventListScreen = () => { // displaying all event entries
+    return(
+      <View style={styles.container}>
+      <View style={styles.homeButton}>
+        {/* switching to entry screen */}
+        <TouchableOpacity onPress= {() => switchScreen('entryScreen')}>
+          <View style={styles.buttonHeader}>
+            <Ionicons name="accessibility-outline" size={35} color="#8b0000" />
+            <Text style={styles.buttonText}>Create Entry</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {eventItem.length > 0 && ( // if events are entered in list, map through entries and display
+      <View style={styles.workoutList}>
+        <Text style={styles.workoutTitle}>Events</Text>
+        {/* mapping through eventItem list */}
+          {eventItem.map((eventItem, index) => (
+            <View key={index} style={styles.workoutItem}>
+              {/* displaying club_name, item, calories */}
+              <View style={styles.workoutInfo}>
+                <Text style={styles.workoutWord}>{eventItem.club_name}</Text>
+                <Text>Item: {eventItem.item}</Text>
+                <Text>Consumed Calories: {eventItem.consumedCals}</Text>
+              </View>
+              {/* option to remove event */}
+            <TouchableOpacity onPress={() => removeEventItem(index)}>
+            <Text style={styles.removeButton}>Remove</Text>
+            </TouchableOpacity>
+            </View>
+          ))}
+
+          {/* takes user to health profile screen */}
+          <View style={styles.profileButton}>
+            <TouchableOpacity onPress= {() => switchScreen('profileScreen')}>
+              <View style={styles.buttonHeader}>
+                <Ionicons name="extension-puzzle-outline" size={50} color="#8b0000" />
+                <Text style={styles.buttonText}>Health Profile</Text>
+              </View>
+            </TouchableOpacity>
+          </View>                           
+        </View>
+      )}
+            {eventItem.length === 0 && ( // if no events
+            <View>
+              <Text style={styles.noWorkouts}>You have no events logged!</Text>
+            </View>
+        )}
+      </View>    
+    )
+  }
+
+  const selectMenuItems = () => { // shows screen to allow user to enter desired event from menu items
+    return(
+    <View style={styles.container}>
+      <Text style={styles.menuTitle}>Menu Items</Text>
+      {event.length > 0 && ( // when clubs inputted
+        <View>
+          {/* searches for club menu and displays last club in array's menu */}
+          {findevent(event[event.length - 1].name).map((menuItem, index) => (
+            <View key={index}>
+              {/* displays items and calories accessed from json file */}
+              <Text style={styles.itemsForm}>
+                <Text style={styles.menuItem}>{menuItem.item}  </Text>
+                <Text style={styles.menuCals}>{menuItem.calories} Calories</Text>
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/*prompting to log event */}
+      <View style={styles.eventForm}>
+          <TextInput
+            style={styles.input}
+            placeholder="Club Name"
+            value={newEventItem.club_name}
+            onChangeText={(text) => handleEventItem('club_name', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Item"
+            value={newEventItem.item}
+            onChangeText={(text) => handleEventItem('item', text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Calories"
+            value={newEventItem.consumedCals}
+            onChangeText={(text) => handleEventItem('consumedCals', text)}
+          />
+      </View>
+      {/* checking if valid submission */}
+      <View style={styles.submitEventButton}>
+        <Button color='white' title="Submit" onPress={checkEventSubmission} />
+      </View>
+    </View>
+    );
+  }
+
+  const entryChoiceScreen = () => { // screen allowing users to choose to enter event or workout
+    return (
+      <View style={styles.container}>
+        <View style={styles.eventButton}>
+          {/* takes user to event entry screen */}
+          <TouchableOpacity onPress= {() => switchScreen('eventScreen')}>
+            <View style={styles.buttonHeader}>
+              <Ionicons name="extension-puzzle-outline" size={50} color='#8b0000' />
+              <Text style={styles.buttonText}>Get Event</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
+
+
+  const handleEventInput = (field:string, value:string) => { // setting newEvent use state
+    setNewEvent({ ...newEvent, [field]: value})
+  }
+  const handleEventItem = (field:string, value: string) => { // setting newEventItem use state
+    setNewEventItem({...newEventItem, [field]: value})
+  }
+  
+ const eventForm = () => { // user enters club name
+    return (
+        <View style={styles.container}>
+          <View style={styles.workoutForm}>
+                <Text style={styles.newWorkout}>Enter club</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Club Name"
+                    value={newEvent.name}
+                    onChangeText={(text) => handleEventInput('name', text)}
+                />
+                {/* checks for valid submission */}
+                <View style={styles.submitButton}>
+                  <Button color='white' title="Submit" onPress={checkclubSubmission} />
+                </View>
+              </View>
+        </View>
+      )
 }
 
+
+  return (
+
+    <View style={styles.container}>
+    
+    {/* switches screen based on function prompt*/}
+
+      {screen === 'initialScreen' && initialScreen()} 
+      {screen === 'entryScreen' && entryChoiceScreen()}
+      {screen === 'eventScreen' && eventForm()}
+      {screen === 'eventListScreen' && eventListScreen()}
+
+    </View>
+    
+    );
+}
+
+// below are all of the style specs
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  button: {
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  separator: {
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
+    top: 300
+  },
+  firstEvent: {
+    fontSize: 40,
+    textAlign: 'center',
+    // marginTop: '50%'
+  },
+  homeButton: {
+    position: 'absolute',
+    top: 0, 
+    // left: 0,
+    // right: 0, 
     padding: 20,
     alignItems: 'center',
     borderStyle: 'solid',
@@ -153,7 +334,48 @@ const styles = StyleSheet.create({
   submitButton: {
     backgroundColor: '#8b0000',
     fontSize: 15,
-    padding: 2,
+    padding: 5,
+    width: 312,
+  },
+  workoutReturnButton: {
+    backgroundColor: '#8b0000',
+    fontSize: 15,
+    padding: 5,
+    width: 312,
+    bottom: 100,
+  },
+  eventReturnButton: {
+    backgroundColor: '#8b0000',
+    fontSize: 15,
+    padding: 5,
+    width: 312,
+  },
+  profileButton: {
+    position: 'absolute',
+    top: 400, 
+    padding: 20,
+    alignItems: 'center',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    width: '100%',
+  },
+  workoutButton: {
+    position: 'absolute',
+    top: 350, 
+    padding: 20,
+    alignItems: 'center',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    width: '100%',
+  },
+  eventButton: {
+    position: 'absolute',
+    top: 150, 
+    padding: 20,
+    alignItems: 'center',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    width: '100%',
   },
   buttonHeader: {
     flexDirection: 'row',
@@ -169,6 +391,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: '10%',
   },
+  workoutForm: {
+    width: '100%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    // marginTop: '10%',
+    top: -150,
+  },
+  eventForm: {
+    width: 200,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    // marginTop: '10%',
+    top: 20,
+  },
+  itemsForm: {
+    bottom: 60
+  },
+
+  submitEventButton: {
+    backgroundColor: '#8b0000',
+    fontSize: 15,
+    padding: 5,
+    width: 312,
+    top: 80
+  },
   input: {
     height: 50,
     borderColor: 'black',
@@ -176,29 +423,59 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
-  noEvents: {
+  noWorkouts: {
     fontSize: 40,
     textAlign: 'center',
-    marginTop: '10%',
+    marginTop: '50%',
   },
-  newEvents: {
+  newWorkout: {
     textAlign: 'center',
+    // top: 30,
     fontSize: 20,
     marginBottom: 20,
     fontWeight: 'bold',
   },
-  EventsList: {
-    marginTop: 20,
+
+  workoutList: {
+    top: -100,
     width: '100%',
   },
-  EventsTitle: {
+  workoutTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     width: '100%',
     paddingLeft: 20,
   },
-  EventsItem: {
+  menuTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    width: '100%',
+    paddingLeft: 20,
+    bottom: 100
+  },
+  menuItem: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+    width: '100%',
+    paddingLeft: 20,
+    bottom: 200,
+    alignItems: 'center',
+    lineHeight: 50
+  },
+  menuCals: {
+    fontSize: 15,
+    marginTop: 20,
+    width: '100%',
+    paddingLeft: 20,
+    bottom: 200,
+    alignItems: 'center',
+    lineHeight: 50
+  },
+
+  workoutItem: {
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -208,13 +485,64 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingBottom: 10,
   },
-  EventsInfo: {
+  workoutProfInfo: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    width: '100%',
+    paddingLeft: 20,
+    paddingBottom: 10,
+    bottom: 300,
+  },
+  eventProfInfo: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    width: '100%',
+    paddingLeft: 20,
+    paddingBottom: 10,
+  },
+  workoutInfo: {
     flex: 1,
   },
-  EventsWord: {
+  workoutWord: {
     fontSize: 20,
     fontWeight: 'bold',
     paddingBottom: 6,
+  },
+  healthWord: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    paddingBottom: 6,
+    bottom: 200,
+  },
+  workCalStat: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingBottom: 6,
+    bottom: 90,
+  },
+  workNumStat: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingBottom: 6,
+    bottom: 90,
+  },
+  eventCalStat: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingBottom: 6,
+    top: 20,
+  },
+  eventNumStat: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingBottom: 6,
+    top: 20,
   },
   removeButton: {
     color: 'red',
