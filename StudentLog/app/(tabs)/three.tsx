@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@/components/Themed';
 import events from './campus_events.json';
 
-export default function EventLogSystem() { // tab for nutrition screen
+export default function EventLogSystem() { // tab for Event screen
   // setting use states
   const [screen, setScreen] = useState('initialScreen');
   const[event, setEvent] = useState([]);
@@ -58,7 +58,7 @@ export default function EventLogSystem() { // tab for nutrition screen
 
   const findevent = (name: string) => {
     const new_event = events.campus_events.find((name) => { // searching for inputted club in json file
-      return new_event.club_name === name;
+      return new_event.club_name === name; // Returns an event if the host club is the club name
     });
 
     if (new_event) { // if valid
@@ -69,12 +69,12 @@ export default function EventLogSystem() { // tab for nutrition screen
     }
   }
 
-  const checkclubSubmission = () => {
+  const checkEventSubmission = () => {
     if (newEvent.name === '' || // checking for blanks
-        findevent(newEvent.name).length === 0) { // invalid club
+        findevent(newEvent.name).length === 0) { // invalid event
       displayFailure(); // failure
     } else {
-      inputRestaruant(); // add club to list, calling func
+      displaySuccess();
     }
   };
 
@@ -83,25 +83,10 @@ export default function EventLogSystem() { // tab for nutrition screen
     setEventItem([...eventItem, newEventItem]);
     setNewEventItem({
       club_name: '',
-      item: '',
-      consumedCals: ''
+      event_description: '',
+      location: ''
     });
     switchScreen('eventListScreen') // displaying event list
-  }
-
-  const findEvents = (name: string) => {
-    const club = events.events.find((club) => { // searching for inputted club in json file
-      return club.name === name;
-    });
-
-    if (club) { // if valid
-      return club.menu.map(menuItem => ({ // adding items and calories to array
-        item: menuItem.item,
-        calories: menuItem.calories
-      }))
-    } else {
-      return []; // blank array if invalid
-    }
   }
 
   const removeEventItem = (index: number) => { // removing event from list
@@ -189,53 +174,6 @@ export default function EventLogSystem() { // tab for nutrition screen
     )
   }
 
-  const selectMenuItems = () => { // shows screen to allow user to enter desired event from menu items
-    return(
-    <View style={styles.container}>
-      <Text style={styles.menuTitle}>Menu Items</Text>
-      {event.length > 0 && ( // when clubs inputted
-        <View>
-          {/* searches for club menu and displays last club in array's menu */}
-          {findevent(event[event.length - 1].name).map((menuItem, index) => (
-            <View key={index}>
-              {/* displays items and calories accessed from json file */}
-              <Text style={styles.itemsForm}>
-                <Text style={styles.menuItem}>{menuItem.item}  </Text>
-                <Text style={styles.menuCals}>{menuItem.calories} Calories</Text>
-              </Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/*prompting to log event */}
-      <View style={styles.eventForm}>
-          <TextInput
-            style={styles.input}
-            placeholder="Club Name"
-            value={newEventItem.club_name}
-            onChangeText={(text) => handleEventItem('club_name', text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Item"
-            value={newEventItem.item}
-            onChangeText={(text) => handleEventItem('item', text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Calories"
-            value={newEventItem.consumedCals}
-            onChangeText={(text) => handleEventItem('consumedCals', text)}
-          />
-      </View>
-      {/* checking if valid submission */}
-      <View style={styles.submitEventButton}>
-        <Button color='white' title="Submit" onPress={checkEventSubmission} />
-      </View>
-    </View>
-    );
-  }
 
   const entryChoiceScreen = () => { // screen allowing users to choose to enter event or workout
     return (
@@ -262,7 +200,7 @@ export default function EventLogSystem() { // tab for nutrition screen
     setNewEventItem({...newEventItem, [field]: value})
   }
   
- const eventForm = () => { // user enters club name
+ const eventForm = () => {
     return (
         <View style={styles.container}>
           <View style={styles.workoutForm}>
@@ -271,11 +209,11 @@ export default function EventLogSystem() { // tab for nutrition screen
                     style={styles.input}
                     placeholder="Club Name"
                     value={newEvent.name}
-                    onChangeText={(text) => handleEventInput('name', text)}
+                    onChangeText={(text) => handleEventInput('name', text)} // user enters club name for event validation
                 />
                 {/* checks for valid submission */}
                 <View style={styles.submitButton}>
-                  <Button color='white' title="Submit" onPress={checkclubSubmission} />
+                  <Button color='white' title="Submit" onPress={checkEventSubmission} />
                 </View>
               </View>
         </View>
